@@ -9,7 +9,7 @@ function getUid() {
 }
 
 const uid = getUid()
-const socket = io('http://localhost:8081')
+const socket = io()
 const lobby = io('/lobby')
 
 matches = {}
