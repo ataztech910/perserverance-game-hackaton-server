@@ -18,7 +18,9 @@
   },
   "homepage": "https://github.com/ataztech910/perserverance-game-hackaton-server#readme",
   "dependencies": {
-    "express": "^4.15.2",
-    "socket.io": "^1.7.3"
+    "express": "^4.17.1",
+    "socket.io": "^1.7.4",
+    "uuid": "^8.0.0",
+    "vue": "^2.6.11"
   }
 }

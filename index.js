@@ -1,8 +1,12 @@
-var express = require('express');
-var app = express();
-var server = require('http').Server(app);
-var io = require('socket.io').listen(server);
+const fs = require('fs')
 
-server.listen(process.env.PORT || 8081,function() { // Listens to port 8081 or auto from deploy
-    console.log('Listening on '+ server.address().port);
-});
+//if (! fs.existsSync(process.env.ASSETS_DIR)) {
+//	throw Error( `Forlder '${process.env.ASSETS_DIR}' is not available. Please install properly environment variable ASSETS_DIR`)
+//}
+
+if (! fs.existsSync(process.env.PUBLIC_DIR)) {
+	throw Error( `Forlder '${process.env.PUBLIC_DIR}' is not available. Please install properly environment variable PUBLIC_DIR`)
+}
+
+require('./app/server')
+
