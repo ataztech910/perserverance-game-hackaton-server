@@ -65,7 +65,7 @@ function matchToDOM(match) {
 			makeTextCell(Object.keys(matches).length),
 			makeTextCell(match.settings.name),
 			makeTextCell(match.settings.players),
-			makeTextCell(Object.keys(match.players).join(', ')),
+			makeTextCell(Object.keys(match.players).map(uid => (uid in users) ? users[uid].nickname : uid).join(', ')),
 			makeTextCell(match.settings.map),
 			makeTextCell(match.status),
 			makeButtonCell('join', `joinMatch('${match.id}')`),
