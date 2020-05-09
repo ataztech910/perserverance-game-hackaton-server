@@ -1,7 +1,7 @@
 const express = require('express')
 const http = require('http')
 const socket_io = require('socket.io')
-const Service = require('./service')
+const LobbyService = require('./service')
 const utils = require('./utils')
 
 const app = express()
@@ -21,21 +21,25 @@ app.get('/public/*', (req, res) => {
 //});
 
 
+const lobby = io.of('/lobby')
+const service = new LobbyService(lobby)
+
 io.on('connection', (socket) => {
-  utils.logSocket(socket, 'a user connected');
+	const sid = utils.getRootSid(socket)
+  utils.logSocket(sid, 'a user connected');
   socket.on('disconnect', () => {
-		utils.logSocket(socket, 'user disconnected');
+		service.signOut(socket)
+		utils.logSocket(sid, 'user disconnected');
   })
 })
 
-const lobby = io.of('/lobby')
-const service = new Service(lobby)
-
 lobby.on('connection', (socket) => {
-  utils.logSocket(socket, 'a user connected');
+	const sid = utils.getRootSid(socket)
+  utils.logSocket(sid, 'a user connected to lobby');
 
 	socket.on('disconnected', (socket) => {
 		service.signOut(socket)
+		utils.logSocket(sid, 'user disconnected from lobby');
 	})
 	socket.on('sign-out', (socket) => {
 		service.signOut(socket)
@@ -45,6 +49,15 @@ lobby.on('connection', (socket) => {
 	})
 	socket.on('matchNew', (...args) => {
 		service.matchNew(socket, ...args)
+	})
+	socket.on('matchJoin', (...args) => {
+		service.matchJoin(socket, ...args)
+	})
+	socket.on('matchLeave', (...args) => {
+		service.matchLeave(socket, ...args)
+	})
+	socket.on('matchReady', (...args) => {
+		service.matchReady(socket, ...args)
 	})
 })
 

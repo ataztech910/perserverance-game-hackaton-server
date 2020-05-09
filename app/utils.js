@@ -7,11 +7,16 @@ function getSessionIds(socket) {
 
 function getRootSid(socket) {
 	const ids = getSessionIds(socket)
-	return ids.length == 1 ? sid : ids[1]
+	return ids.length == 1 ? ids : ids[1]
 }
 
-function logSocket(socket, ...args) {
-	console.log(`[${socket.id}]: `, ...args)
+function logSocket(sid, ...args) {
+	console.log(`[${sid}]: `, ...args)
+}
+
+function logAndCall(sid, fn, ...args) {
+	console.log(`[${sid}]:`, ...args)
+	fn(...args)
 }
 
 function generateUuid() {
@@ -22,5 +27,6 @@ module.exports = {
 	getSessionIds,
 	getRootSid,
 	logSocket,
+	logAndCall,
 	generateUuid,
 }
