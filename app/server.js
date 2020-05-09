@@ -9,7 +9,7 @@ const server = http.Server(app)
 const io = socket_io.listen(server)
 
 app.get('/', (req, res) => {
-	res.redirect('/public/index.html')
+	res.redirect(process.env.PUBLIC_DIR + '/index.html')
 });
 
 app.get('/public/*', (req, res) => {
