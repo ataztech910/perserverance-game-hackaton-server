@@ -12,6 +12,10 @@ const uid = getUid()
 const socket = io('http://localhost:8081')
 const lobby = io('/lobby')
 
+matches = {}
+users = {}
+
+
 function makeTextCell(text) {
 	return document.createTextNode(text)
 }
@@ -34,9 +38,6 @@ function makeRow(...args) {
 	}
 	return row
 }
-
-matches = {}
-users = {}
 
 function joinMatch(mid) {
 	console.log('matchJoin', mid)
