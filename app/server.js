@@ -13,11 +13,11 @@ app.get('/', (req, res) => {
 });
 
 app.get('/public/*', (req, res) => {
-  res.sendFile(process.env.PUBLIC_DIR + '/' + req.params[0])
+	res.sendFile(process.env.PUBLIC_DIR + '/' + req.params[0])
 });
 
 //app.get('/assets/*', (req, res) => {
-//  res.sendFile(process.env.PUBLIC_DIR + '/' + req.params[0])
+//	res.sendFile(process.env.PUBLIC_DIR + '/' + req.params[0])
 //});
 
 
@@ -26,16 +26,16 @@ const service = new LobbyService(lobby)
 
 io.on('connection', (socket) => {
 	const sid = utils.getRootSid(socket)
-  utils.logSocket(sid, 'a user connected');
-  socket.on('disconnect', () => {
+	utils.logSocket(sid, 'a user connected');
+	socket.on('disconnect', () => {
 		service.signOut(socket)
 		utils.logSocket(sid, 'user disconnected');
-  })
+	})
 })
 
 lobby.on('connection', (socket) => {
 	const sid = utils.getRootSid(socket)
-  utils.logSocket(sid, 'a user connected to lobby');
+	utils.logSocket(sid, 'a user connected to lobby');
 
 	socket.on('disconnected', (socket) => {
 		service.signOut(socket)
@@ -62,6 +62,6 @@ lobby.on('connection', (socket) => {
 })
 
 server.listen(process.env.PORT || 8081,function() {
-    console.log('Listening on '+ server.address().port);
+		console.log('Listening on '+ server.address().port);
 });
 
