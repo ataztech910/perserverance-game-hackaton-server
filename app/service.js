@@ -203,11 +203,19 @@ class LobbyService {
 		utils.logAndCall(sid, fn, 'success')
 	}
 
+	forceStart(socket, mid) {
+		this.startMatch(mid)
+	}
+
+	startedMatches = {}
+
 	startMatch(mid) {
 		//io.sockets.in(getRoomName(mid))
-		match = io.of(getMatchName(mid))
+		if (mid in startedMatches)
+			return
+		startedMatches[mid] = io.of(getMatchName(mid))
 
-		match.on('broadcast', (socket, msg) => {
+		startedMatches[mid].on('broadcast', (socket, msg) => {
 			socket.broadcast('broadcast', msg);
 		})
 
