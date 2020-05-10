@@ -16,6 +16,10 @@ matches = {}
 users = {}
 
 
+function getMatchName(mid) {
+	return `match-${mid}`
+}
+
 function makeTextCell(text) {
 	return document.createTextNode(text)
 }
@@ -172,6 +176,16 @@ lobby.on('connect', () => {
 		console.log('matchStarted', mid)
 		matches[mid].status = 'playing'
 		rerenderMatch(mid)
+
+		match = io('/' + getMatchName(mid))
+
+		match.on('broadcast', (msg) => {
+			console.log(msg)
+		})
+
+		setInterval(() => {
+			match.emit('broadcast', 'qwe')
+		}, 1000)
 	})
 
 	lobby.on('matchFinished', (mid) => {
