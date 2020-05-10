@@ -40,7 +40,7 @@ app.get('/public/*', (req, res) => {
 
 
 const lobby = io.of('/lobby')
-const service = new LobbyService(lobby)
+const service = new LobbyService(io, lobby)
 
 io.on('connection', (socket) => {
 	const sid = utils.getRootSid(socket)

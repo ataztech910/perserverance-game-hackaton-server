@@ -3,7 +3,7 @@ const utils = require('./utils')
 const AUTOLEAVE_MATCHES_TIMEOUT = 30000
 
 class LobbyService {
-	constructor(lobby) {
+	constructor(io, lobby) {
 		this.lobby = lobby
 		this.users = {}
 		this.sockets = {}
@@ -11,6 +11,10 @@ class LobbyService {
 		this.timers = {
 			autoleave: {}
 		}
+	}
+
+	getMatchName(mid) {
+		return `match-${mid}`
 	}
 
 	signIn(socket, ...args) {
@@ -62,18 +66,22 @@ class LobbyService {
 				this.users[uid].timers.autoleave = null
 
 				for (const mid of Object.keys(this.matches)) {
-					this.removeUserFromMatch(sid, uid, mid)
+					this.removeUserFromMatch(socket, uid, mid)
 				}
 
 			}, AUTOLEAVE_MATCHES_TIMEOUT)
 		}
 	}
 
-	removeUserFromMatch(sid, uid, mid) {
+	removeUserFromMatch(socket, uid, mid) {
+		const sid = utils.getRootSid(socket)
 		const match = this.matches[mid]
 		if (uid in match.players) {
 			delete match.players[uid]
+
+			//socket.leave(getMatchName(mid))
 			this.lobby.emit('matchLeaved', mid, uid)
+
 			utils.logSocket(sid, `user '${uid}' leaved match ${mid}`);
 			if (Object.keys(match.players).length == 0) {
 				delete this.matches[mid]
@@ -106,8 +114,10 @@ class LobbyService {
 		match.players[uid] = false
 		this.matches[mid] = match
 		this.users[uid].mid = mid
-		utils.logSocket(sid, `user '${uid}' made new game '${mid}'`);
+
+		//socket.join(getMatchName(mid))
 		this.lobby.emit('matchAdd', match)
+		utils.logSocket(sid, `user '${uid}' made new game '${mid}'`);
 	}
 
 	matchJoin(socket, ...args) {
@@ -133,10 +143,12 @@ class LobbyService {
 			utils.logAndCall(sid, fn, 'you already in onther match')
 			return
 		}
-		utils.logAndCall(sid, fn, 'success')
 		match.players[uid] = false
 		user.mid = mid
+
+		//socket.join(getMatchName(mid))
 		this.lobby.emit('matchJoined', mid, uid)
+		utils.logAndCall(sid, fn, 'success')
 	}
 
 	matchLeave(socket, ...args) {
@@ -149,7 +161,7 @@ class LobbyService {
 
 		for (const mid of [otherMid, leaveMid]) {
 			if (mid in this.matches) {
-				this.removeUserFromMatch(sid, uid, mid)
+				this.removeUserFromMatch(socket, uid, mid)
 			}
 		}
 
@@ -184,11 +196,23 @@ class LobbyService {
 
 			if (allReady) {
 				match.status = 'playing'
-				utils.logSocket(sid, `match '${mid}' is going to start`);
-				this.lobby.emit('matchStarted', mid)
+				utils.logSocket(sid, `match '${mid}' is going to start`)
+				this.startMatch(mid)
 			}
 		}
 		utils.logAndCall(sid, fn, 'success')
+	}
+
+	startMatch(mid) {
+		//io.sockets.in(getRoomName(mid))
+		match = io.of(getMatchName(mid))
+
+		match.on('broadcast', (socket, msg) => {
+			socket.broadcast('broadcast', msg);
+		})
+
+		this.lobby.emit('matchStarted', mid)
+		utils.logSocket(sid, `match '${mid}' started`)
 	}
 }
 
