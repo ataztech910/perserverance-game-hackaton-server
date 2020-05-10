@@ -6,13 +6,13 @@ const utils = require('./utils')
 const path = require('path')
 
 const app = express()
-const server = http.Server(app)
-const io = socket_io.listen(server)
-
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     next();
 });
+
+const server = http.Server(app)
+const io = socket_io.listen(server)
 
 app.get('/', (req, res) => {
 	res.redirect('/public/index.html')
