@@ -77,6 +77,9 @@ lobby.on('connection', (socket) => {
 	socket.on('matchReady', (...args) => {
 		service.matchReady(socket, ...args)
 	})
+	socket.on('forceStart', (...args) => {
+		service.forceStart(socket, ...args)
+	})
 })
 
 server.listen(process.env.PORT || 8081, function() {
