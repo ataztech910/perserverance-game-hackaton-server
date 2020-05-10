@@ -25,6 +25,7 @@ io.on('connection', (socket) => {
 	socket.broadcast.emit('hello', {
 		sid: socket.id,
 	});
+	socket.emit('hi', socket.id)
 
 	socket.on('disconnect', () => {
 		console.log(`[${socket.id}]: disconnect`)
