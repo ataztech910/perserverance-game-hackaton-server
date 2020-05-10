@@ -3,6 +3,7 @@ const http = require('http')
 const socket_io = require('socket.io')
 const LobbyService = require('./service')
 const utils = require('./utils')
+const path = require('path')
 
 const app = express()
 const server = http.Server(app)
@@ -12,8 +13,11 @@ app.get('/', (req, res) => {
 	res.redirect(process.env.PUBLIC_DIR + '/index.html')
 });
 
+//app.use(express.static(process.env.PUBLIC_DIR + '/'));
 app.get('/public/*', (req, res) => {
-	res.sendFile(process.env.PUBLIC_DIR + '/' + req.params[0])
+	const p = path.resolve(process.env.PUBLIC_DIR) + '/' + req.params[0]
+	console.log(p)
+	res.sendFile(p)
 });
 
 //app.get('/assets/*', (req, res) => {
