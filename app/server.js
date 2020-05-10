@@ -10,7 +10,7 @@ const server = http.Server(app)
 const io = socket_io.listen(server)
 
 app.get('/', (req, res) => {
-	res.redirect(process.env.PUBLIC_DIR + '/index.html')
+	res.redirect('/public/index.html')
 });
 
 //app.use(express.static(process.env.PUBLIC_DIR + '/'));
@@ -21,7 +21,9 @@ app.get('/public/*', (req, res) => {
 });
 
 //app.get('/assets/*', (req, res) => {
-//	res.sendFile(process.env.PUBLIC_DIR + '/' + req.params[0])
+//	const p = path.resolve(process.env.ASSETS_DIR) + '/' + req.params[0]
+//	console.log(p)
+//	res.sendFile(p)
 //});
 
 
